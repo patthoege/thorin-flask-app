@@ -1,11 +1,14 @@
 # import section
 import os
 import json
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
+if os.path.exists("env.py"):
+    import env
 
 # built-in variable first argument of Flask class,
 # important for Flask to look fro templates and static files.
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY")
 
 # a route decorator binds by (wrapping functions) @ pie-notation symbol
 #  the '/' returns from the top level of our domain, the template from our index function
@@ -39,10 +42,8 @@ def about_member(member_name):
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
-        print(request.form.get("name"))
-        print(request.form["email"])
-        print(request.form["phone"])
-        print(request.form["message"])
+        flash("Thanks {}, we have received your message!".format(
+            request.form.get("name")))
     return render_template("contact.html", page_title="Contact")
 
 @app.route("/careers")
